@@ -3,6 +3,7 @@ THIS_GOOS=$(word 1,$(subst /, ,$(lastword $(THIS_GOVERSION))))
 THIS_GOARCH=$(word 2,$(subst /, ,$(lastword $(THIS_GOVERSION))))
 GOOS=$(THIS_GOOS)
 GOARCH=$(THIS_GOARCH)
+VERSION=$(shell git rev-parse --short HEAD)
 ifeq ($(GOOS),windows)
 EXT=.exe
 else
@@ -27,8 +28,8 @@ run:
 .PHONY: build
 build: $(EXEFILE)
 
-$(EXEFILE):
-	go build -o $@ ./cmd/hello
+$(EXEFILE): $(wildcard $(PWD)/cmd/hello/*)
+	go build -o $@ -ldflags="-s -w -X main.version=$(VERSION)" ./cmd/hello
 
 .PHONY: release
 release: $(ARTIFACT)
