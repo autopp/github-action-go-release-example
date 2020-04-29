@@ -16,3 +16,5 @@ jobs:
       uses: actions/checkout@v2
     - name: Run Hub
       run: hub version && hub pr list
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
