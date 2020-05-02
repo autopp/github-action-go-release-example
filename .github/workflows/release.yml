@@ -5,7 +5,7 @@ on:
     types: [published]
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     steps:
     - name: Set up Go 1.x
@@ -37,7 +37,9 @@ jobs:
         make release GOOS=darwin GOARCH=amd64 VERSION=${GITHUB_REF}
     - name: Build for linux
       run: |
-        make release GOOS=windows GOARCH=amd64 VERSION="${GITHUB_REF}"
+        make release GOOS=release GOARCH=amd64 VERSION="${GITHUB_REF}"
     - name: Upload
       run: |
         hub release edit "${GITHUB_REF}" -a build/hello-windows-amd64.zip -a build/hello-darwin-amd64.zip -a build/hello-linux-amd64.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
