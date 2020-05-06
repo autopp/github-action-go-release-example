@@ -1,13 +1,17 @@
 name: Release
 
 on:
-  release:
-    types: [published]
+  pull_request:
+    branches:
+      branches: ["release/v*"]
 
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+    - name: Env
+      run: |
+        echo ${GITHUB_REF}
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
       with:
@@ -38,8 +42,3 @@ jobs:
     - name: Build for linux
       run: |
         make release GOOS=linux GOARCH=amd64 VERSION="${GITHUB_REF#refs/tags/}"
-    - name: Upload
-      run: |
-        hub release edit "${GITHUB_REF#refs/tags/}" -m "${GITHUB_REF#refs/tags/}" -a build/hello-windows-amd64.zip -a build/hello-darwin-amd64.zip -a build/hello-linux-amd64.zip
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
