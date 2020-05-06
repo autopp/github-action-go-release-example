@@ -2,7 +2,7 @@ name: Prepare Release
 
 on:
   pull_request:
-    branches: ["release/*"]
+    branches: ["master"]
 
 jobs:
   release:
@@ -11,6 +11,8 @@ jobs:
     - name: Env
       run: |
         echo ${GITHUB_REF}
+        echo ${GITHUB_HEAD_REF}
+        echo ${GITHUB_BASE_REF}
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
       with:
