@@ -2,7 +2,7 @@ name: Prepare Release
 
 on:
   pull_request:
-    branches: ["release/v*"]
+    branches: ["release/*"]
 
 jobs:
   release:
