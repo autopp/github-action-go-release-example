@@ -20,9 +20,10 @@ jobs:
       uses: actions/checkout@v2
     - name: Check existing release
       run: |
-        TAG=${GITHUB_REF#release/}
-        if hub release -f "%T:%s" | grep -e "^${TAG}:$" >/dev/null; then
-          echo ${TAG} is already published
+        VERSION=${GITHUB_HEAD_REF#release/}
+        echo target version is ${VERSION}
+        if hub release -f "%T:%s" | grep -e "^${VERSION}:$" >/dev/null; then
+          echo ${VERSION} is already published
           exit 1
         fi
     - name: Use Cache
@@ -36,12 +37,20 @@ jobs:
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
         go mod download
-    - name: Build for Windows
+    - name: Build artifacts
       run: |
-        make release GOOS=windows GOARCH=amd64 VERSION="${GITHUB_REF#refs/tags/}"
-    - name: Build for Darwin
+        VERSION=${GITHUB_HEAD_REF#release/}
+        make release GOOS=windows GOARCH=amd64 VERSION="${VERSION}"
+        make release GOOS=darwin GOARCH=amd64 VERSION="${VERSION}"
+        make release GOOS=linux GOARCH=amd64 VERSION="${VERSION}"
+    - name: Edit release
       run: |
-        make release GOOS=darwin GOARCH=amd64 VERSION="${GITHUB_REF#refs/tags/}"
-    - name: Build for linux
-      run: |
-        make release GOOS=linux GOARCH=amd64 VERSION="${GITHUB_REF#refs/tags/}"
+        VERSION=${GITHUB_HEAD_REF#release/}
+        if hub release show "${VERSION}" >/dev/null; then
+          echo Edit existing draft release
+          subcommand=edit
+        else
+          echo Create new release
+          subcommand=create
+        fi
+        hub "${subcommand}" "${VERSION}" -t "${GITHUB_SHA}" $(ls build/*.zip | xargs -n 1 echo -a) --draft
