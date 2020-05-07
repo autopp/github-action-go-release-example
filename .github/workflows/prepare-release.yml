@@ -59,4 +59,4 @@ jobs:
           echo Create new release
           subcommand=create
         fi
-        hub release "${subcommand}" "${VERSION}" -t "${GITHUB_SHA}" $(ls build/*.zip | xargs -n 1 echo -a) --draft
+        hub release "${subcommand}" "${VERSION}" -t "${GITHUB_SHA}" $(ls build/*.zip | xargs -n 1 echo -a) -m "${VERSION}" --draft
