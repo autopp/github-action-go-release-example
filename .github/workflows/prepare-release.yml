@@ -55,10 +55,12 @@ jobs:
           git push origin :"${VERSION}"
         fi
 
-        if hub release --include-drafts -f "%t:%S%n" | grep -x -F "${VERSION}:draft"; then
+        if hub release --include-drafts -f "%t:%S%n" | grep -x -F "${VERSION}:draft" >/dev/null; then
           echo Delete existing release
           PREV_TAG=$(hub release --include-drafts -f "%t:%T%n" | grep -e "^${VERSION//./\\.}:" | cut -d : -f 2)
           hub release delete "${PREV_TAG}"
         fi
+
+        echo "GITHUB_SHA=${GITHUB_SHA}"
 
         hub release create "${VERSION}" -t "${GITHUB_SHA}" $(ls build/*.zip | xargs -n 1 echo -a) -m "${VERSION}" --draft
