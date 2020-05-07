@@ -18,6 +18,8 @@ jobs:
       id: go
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
     - name: Check existing release
       run: |
         VERSION=${GITHUB_HEAD_REF#release/}
