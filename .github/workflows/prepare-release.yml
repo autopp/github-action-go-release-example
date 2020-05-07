@@ -22,7 +22,7 @@ jobs:
       run: |
         VERSION=${GITHUB_HEAD_REF#release/}
         echo target version is ${VERSION}
-        if hub release -f "%T:%s" | grep -x -F "${VERSION}:" >/dev/null; then
+        if hub release -f "%T:%s%n" | grep -x -F "${VERSION}:" >/dev/null; then
           echo ${VERSION} is already published
           exit 1
         fi
@@ -43,6 +43,9 @@ jobs:
         make release GOOS=windows GOARCH=amd64 VERSION="${VERSION}"
         make release GOOS=darwin GOARCH=amd64 VERSION="${VERSION}"
         make release GOOS=linux GOARCH=amd64 VERSION="${VERSION}"
+    - name: Dump event
+      run: |
+        echo '${{ github.event }}'
     - name: Edit release
       run: |
         VERSION=${GITHUB_HEAD_REF#release/}
@@ -52,14 +55,9 @@ jobs:
           git push origin :"${VERSION}"
         fi
 
-        if hub release show "${VERSION}" >/dev/null; then
-          echo Edit existing draft release
-          subcommand=edit
-        else
-          echo Create new release
-          subcommand=create
+        if hub release --include-drafts -f "%t:%S%n" | grep -x -F "${VERSION}:draft"; then
+          echo Delete existing release
+          hub release delete "${VERSION}"
         fi
-        hub release "${subcommand}" "${VERSION}" -t "${GITHUB_SHA}" $(ls build/*.zip | xargs -n 1 echo -a) -m "${VERSION}" --draft
-    - name: Dump event
-      run: |
-        echo '${{ github.event }}'
+
+        hub release create "${VERSION}" -t "${GITHUB_SHA}" $(ls build/*.zip | xargs -n 1 echo -a) -m "${VERSION}" --draft
