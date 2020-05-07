@@ -45,22 +45,13 @@ jobs:
         make release GOOS=windows GOARCH=amd64 VERSION="${VERSION}"
         make release GOOS=darwin GOARCH=amd64 VERSION="${VERSION}"
         make release GOOS=linux GOARCH=amd64 VERSION="${VERSION}"
-    - name: Dump event
-      run: |
-        echo '${{ toJSON(github.event) }}'
     - name: Edit release
       run: |
         VERSION=${GITHUB_HEAD_REF#release/}
-        if git tag | grep -x -F "${VERSION}"; then
-          echo Delete existing tag
-          git tag -d "${VERSION}"
-          git push origin :"${VERSION}"
-        fi
 
         if hub release --include-drafts -f "%t:%S%n" | grep -x -F "${VERSION}:draft" >/dev/null; then
           echo Delete existing release
-          PREV_TAG=$(hub release --include-drafts -f "%t:%T%n" | grep -e "^${VERSION//./\\.}:" | cut -d : -f 2)
-          hub release delete "${PREV_TAG}"
+          hub release delete "${VERSION}"
         fi
 
         hub release create "${VERSION}" -t "${{ github.event.pull_request.head.sha }}" $(ls build/*.zip | xargs -n 1 echo -a) -m "${VERSION}" --draft
