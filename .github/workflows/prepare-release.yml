@@ -46,7 +46,11 @@ jobs:
     - name: Edit release
       run: |
         VERSION=${GITHUB_HEAD_REF#release/}
-        if git tag | grep -x -F "${VERSION}"
+        if git tag | grep -x -F "${VERSION}"; then
+          echo Delete existing tag
+          git tag -d "${VERSION}"
+          git push origin :"${VERSION}"
+        fi
 
         if hub release show "${VERSION}" >/dev/null; then
           echo Edit existing draft release
