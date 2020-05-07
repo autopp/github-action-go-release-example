@@ -18,18 +18,12 @@ jobs:
       id: go
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
-    - name: Cleanup tag and release
+    - name: Check existing release
       run: |
         TAG=${GITHUB_REF#release/}
-        if git show "${TAG}" >/dev/null; then
-          echo delete tag ${TAG}
-          git tag -d ${TAG}
-          git push origin :${TAG}
-        fi
-
-        if hub release | grep -e "^${TAG}$" >/dev/null; then
-          echo delete release ${TAG}
-          hub release delete ${TAG}
+        if hub release -f "%T:%s" | grep -e "^${TAG}:$" >/dev/null; then
+          echo ${TAG} is already published
+          exit 1
         fi
     - name: Use Cache
       uses: actions/cache@v1
