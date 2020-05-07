@@ -22,7 +22,7 @@ jobs:
       run: |
         VERSION=${GITHUB_HEAD_REF#release/}
         echo target version is ${VERSION}
-        if hub release -f "%T:%s" | grep -e "^${VERSION}:$" >/dev/null; then
+        if hub release -f "%T:%s" | grep -x -F "${VERSION}:" >/dev/null; then
           echo ${VERSION} is already published
           exit 1
         fi
@@ -46,6 +46,8 @@ jobs:
     - name: Edit release
       run: |
         VERSION=${GITHUB_HEAD_REF#release/}
+        if git tag | grep -x -F "${VERSION}"
+
         if hub release show "${VERSION}" >/dev/null; then
           echo Edit existing draft release
           subcommand=edit
