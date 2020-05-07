@@ -1,6 +1,10 @@
 name: Test
 
-on: [push]
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches-ignore: ["release/*"] # `release/*` branches are tested by Prepare Release
 
 jobs:
   test:
