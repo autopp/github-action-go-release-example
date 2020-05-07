@@ -45,7 +45,7 @@ jobs:
         make release GOOS=linux GOARCH=amd64 VERSION="${VERSION}"
     - name: Dump event
       run: |
-        echo '${{ github.event }}'
+        echo '${{ toJSON(github.event) }}'
     - name: Edit release
       run: |
         VERSION=${GITHUB_HEAD_REF#release/}
@@ -57,7 +57,8 @@ jobs:
 
         if hub release --include-drafts -f "%t:%S%n" | grep -x -F "${VERSION}:draft"; then
           echo Delete existing release
-          hub release delete "${VERSION}"
+          PREV_TAG=$(hub release --include-drafts -f "%t:%T%n" | grep -e "^${VERSION//./\\.}:" | cut -d : -f 2)
+          hub release delete "${PREV_TAG}"
         fi
 
         hub release create "${VERSION}" -t "${GITHUB_SHA}" $(ls build/*.zip | xargs -n 1 echo -a) -m "${VERSION}" --draft
