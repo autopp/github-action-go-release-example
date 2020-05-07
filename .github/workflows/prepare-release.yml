@@ -63,7 +63,4 @@ jobs:
           hub release delete "${PREV_TAG}"
         fi
 
-        echo "GITHUB_SHA=${GITHUB_SHA}"
-        git --no-pager log -n 5
-
-        hub release create "${VERSION}" -t "${GITHUB_SHA}" $(ls build/*.zip | xargs -n 1 echo -a) -m "${VERSION}" --draft
+        hub release create "${VERSION}" -t "${{ github.event.pull_request.head.sha }}" $(ls build/*.zip | xargs -n 1 echo -a) -m "${VERSION}" --draft
