@@ -60,3 +60,6 @@ jobs:
           subcommand=create
         fi
         hub release "${subcommand}" "${VERSION}" -t "${GITHUB_SHA}" $(ls build/*.zip | xargs -n 1 echo -a) -m "${VERSION}" --draft
+    - name: Dump event
+      run: |
+        echo '${{ github.event }}'
