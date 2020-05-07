@@ -5,9 +5,9 @@ on:
     branches: ["master"]
 
 jobs:
-  release:
+  prepare-release:
     runs-on: ubuntu-latest
-    if: "startsWith(github.head_ref, 'release/v')"
+    if: "startsWith(github.head_ref, 'release/v') && !github.event.pull_request.head.fork"
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
