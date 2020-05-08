@@ -7,7 +7,6 @@ on:
 
 jobs:
   test:
-    name: Test
     runs-on: ubuntu-latest
     if: github.event_type == 'push' || github.event.pull_request.head.fork || !startsWith(github.head_ref, 'release/v')
     steps:
