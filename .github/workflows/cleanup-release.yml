@@ -1,4 +1,4 @@
-name: Publish Release
+name: Cleanup Release
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
     types: ["closed"]
 
 jobs:
-  publish:
+  cleanup:
     runs-on: ubuntu-latest
     if: "startsWith(github.head_ref, 'release/v') && !github.event.pull_request.head.fork"
     env:
