@@ -1,5 +1,3 @@
-name: Prepare Release
-
 on:
   pull_request:
     branches: ["master"]

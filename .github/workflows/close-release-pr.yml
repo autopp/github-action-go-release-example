@@ -1,12 +1,10 @@
-name: Cleanup Release
-
 on:
   pull_request:
     branches: ["master"]
     types: ["closed"]
 
 jobs:
-  cleanup:
+  cleanup-release:
     runs-on: ubuntu-latest
     if: "startsWith(github.head_ref, 'release/') && !github.event.pull_request.head.fork"
     env:
