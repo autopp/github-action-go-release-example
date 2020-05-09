@@ -4,6 +4,8 @@ on: ["pull_request"]
 
 jobs:
   test:
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     name: Test
     runs-on: ubuntu-latest
     if: "!startsWith(github.head_ref, 'release/') || github.event.pull_request.head.fork"
