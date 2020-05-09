@@ -4,6 +4,7 @@ on: ["pull_request"]
 
 jobs:
   test:
+    name: Test
     runs-on: ubuntu-latest
     if: "!startsWith(github.head_ref, 'release/') || github.event.pull_request.head.fork"
     steps:
@@ -34,3 +35,8 @@ jobs:
       with:
         name: artifact
         path: ${{ github.workspace }}/build/*/hello
+    - name: Auto Merge
+      if: contains(github.event.pull_request.body, '[auto merge]') && !contains(github.event.pull_request.title, '[WIP]') && !contains(github.event.pull_request.title, '[DNM]') && !github.event.pull_request.head.fork
+      run: |
+        # Request to merge button API
+        hub api -X POST /repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.number }}/merge
