@@ -23,7 +23,7 @@ test:
 
 .PHONY: run
 run:
-	go run ./cmd/hello/main.go
+	go run ./cmd/hello/main.go $(ARGS)
 
 .PHONY: build
 build: $(EXEFILE)
