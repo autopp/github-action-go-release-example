@@ -30,7 +30,6 @@ jobs:
         make build GOOS=linux GOARCH=amd64
         make build GOOS=darwin GOARCH=amd64
         make build GOOS=windows GOARCH=amd64
-        ls -lR build
     - name: Save Artifact
       uses: actions/upload-artifact@v2
       with:
@@ -63,7 +62,7 @@ jobs:
           path: binaries
       - name: Smoke Test
         run: |
-          ls -lR binaries
+          chmod a+x "binaries/hello-${{ matrix.osarch }}/hello${{ matrix.extention }}"
           "binaries/hello-${{ matrix.osarch }}/hello${{ matrix.extention }}" -h
   auto-merge:
     needs: [smoke-test]
