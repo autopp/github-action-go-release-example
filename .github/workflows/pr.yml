@@ -33,7 +33,7 @@ jobs:
     - name: Save Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: artifact
+        name: binaries
         path: build/*/hello*
   smoke-test:
     strategy:
@@ -57,10 +57,11 @@ jobs:
       - name: Download Artifact
         uses: actions/download-artifact@v2
         with:
-          name: artifact
+          name: binaries
       - name: Smoke Test
         run: |
-          "artifact/hello-${{ matrix.osarch }}/hello${{ matrix.extention }}" -h
+          ls binaries
+          "binaries/hello-${{ matrix.osarch }}/hello${{ matrix.extention }}" -h
   auto-merge:
     needs: [smoke-test]
     env:
