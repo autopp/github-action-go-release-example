@@ -53,8 +53,6 @@ jobs:
     needs: [unit-test]
     runs-on: "${{ matrix.os }}"
     steps:
-      - name: debug
-        run: echo osarch=${{ matrix.osarch }} extention=${{ matrix.extention }}
       - name: Download Artifact
         uses: actions/download-artifact@v2
         with:
@@ -63,7 +61,7 @@ jobs:
       - name: Smoke Test
         run: |
           chmod a+x "binaries/hello-${{ matrix.osarch }}/hello${{ matrix.extention }}"
-          binaries/hello-${{ matrix.osarch }}/hello${{ matrix.extention }} "-h"
+          binaries/hello-${{ matrix.osarch }}/hello${{ matrix.extention }}
   auto-merge:
     needs: [smoke-test]
     env:
