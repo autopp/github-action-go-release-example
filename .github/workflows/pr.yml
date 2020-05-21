@@ -58,9 +58,10 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: binaries
+          path: binaries
       - name: Smoke Test
         run: |
-          ls binaries
+          ls -R binaries
           "binaries/hello-${{ matrix.osarch }}/hello${{ matrix.extention }}" -h
   auto-merge:
     needs: [smoke-test]
