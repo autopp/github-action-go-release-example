@@ -63,7 +63,7 @@ jobs:
       - name: Smoke Test
         run: |
           chmod a+x "binaries/hello-${{ matrix.osarch }}/hello${{ matrix.extention }}"
-          "binaries/hello-${{ matrix.osarch }}/hello${{ matrix.extention }}"
+          binaries/hello-${{ matrix.osarch }}/hello${{ matrix.extention }}
   auto-merge:
     needs: [smoke-test]
     env:
