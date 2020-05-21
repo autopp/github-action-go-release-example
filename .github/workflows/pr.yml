@@ -26,12 +26,15 @@ jobs:
     - name: Run Test
       run: make test
     - name: Build
-      run: make build
+      run: |
+        make build GOOS=linux GOARCH=amd64
+        make build GOOS=darwin GOARCH=amd64
+        make build GOOS=windows GOARCH=amd64
     - name: Save Artifact
       uses: actions/upload-artifact@v2
       with:
         name: artifact
-        path: ${{ github.workspace }}/build/*/hello*
+        path: build/*/hello*
   smoke-test:
     strategy:
       matrix:
@@ -51,6 +54,13 @@ jobs:
     steps:
       - name: debug
         run: echo osarch=${{ matrix.osarch }} extention=${{ matrix.extention }}
+      - name: Download Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: artifact
+      - name: Smoke Test
+        run: |
+          "artifact/hello-${{ matrix.osarch }}/hello${{ matrix.extention }}" -h
   auto-merge:
     needs: [smoke-test]
     env:
