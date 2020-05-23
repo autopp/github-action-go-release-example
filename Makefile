@@ -1,8 +1,6 @@
 THIS_GOVERSION=$(shell go version)
-THIS_GOOS=$(word 1,$(subst /, ,$(lastword $(THIS_GOVERSION))))
-THIS_GOARCH=$(word 2,$(subst /, ,$(lastword $(THIS_GOVERSION))))
-GOOS=$(THIS_GOOS)
-GOARCH=$(THIS_GOARCH)
+GOOS=$(word 1,$(subst /, ,$(lastword $(THIS_GOVERSION))))
+GOARCH=$(word 2,$(subst /, ,$(lastword $(THIS_GOVERSION))))
 VERSION=$(shell git rev-parse --short HEAD)
 ifeq ($(GOOS),windows)
 EXT=.exe
